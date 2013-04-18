@@ -51,6 +51,7 @@ $(LIBCCAN): $(CCAN_DIR)
 define test-program-template
 $$(BUILD)/$(1): $$(BUILD)/$(1).o $$(LIBCCAN)
 	$(CXX_CMD) $$+ $$(TEST_LIB) -o $$@
+endef
 
 .PHONY: run-tests
 run-tests: tests $(foreach test, $(TEST_OUTPUTS), $(notdir $(test) ) )
