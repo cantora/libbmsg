@@ -12,13 +12,12 @@ CXX_FLAGS		= -Wall -Wextra $(INCLUDES) $(OPTIMIZE) $(DEFINES)
 CXX_CMD			= gcc $(CXX_FLAGS)
 
 SRCS			= $(notdir $(wildcard ./src/*.c) )
-CCAN_MODULES	= tap build_assert endian
+CCAN_MODULES	= tap build_assert endian array_size
 OBJECTS			= $(patsubst %.c, $(BUILD)/%.o, $(SRCS) ) 
 DEP_FLAGS		= -MMD -MP -MF $(patsubst %.o, %.d, $@)
 
 TESTS 			= $(notdir $(patsubst %.c, %, $(wildcard ./test/*_test.c) ) )
 TEST_OUTPUTS	= $(foreach test, $(TESTS), $(BUILD)/$(test))
-TEST_LIB		= $(LIB)
 
 default: all
 
@@ -49,8 +48,11 @@ $(LIBCCAN): $(CCAN_DIR)
 	cd $(CCAN_DIR) && $(MAKE) $(MFLAGS) 
 
 define test-program-template
-$$(BUILD)/$(1): $$(BUILD)/$(1).o $$(LIBCCAN)
-	$(CXX_CMD) $$+ $$(TEST_LIB) -o $$@
+$$(BUILD)/$(1): $$(BUILD)/$(1).o $$(LIBCCAN) $$(OUTPUT)
+	$(CXX_CMD) $$+ -o $$@
+
+$(1): $$(BUILD)/$(1)
+	$(BUILD)/$(1) 
 endef
 
 .PHONY: run-tests
