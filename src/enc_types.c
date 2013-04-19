@@ -71,3 +71,17 @@ size_t enc_varint(uint8_t *buf, size_t size, uint64_t val) {
 
 	return vint_size;
 }
+
+/* here we impose a reasonable maximum string length size of 65535 */
+size_t enc_varstr(uint8_t *buf, size_t size, const char *str, uint16_t slen) {
+	size_t vint_size;
+
+	vint_size = enc_varint(buf, size, slen);
+	if(vint_size + slen > size)
+		return vint_size;
+
+	if(slen > 0)
+		memcpy(buf+vint_size, str, slen);
+
+	return vint_size;
+}

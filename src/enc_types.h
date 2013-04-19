@@ -19,5 +19,15 @@ void enc_uint16(uint8_t *buf, uint16_t val);
  */
 size_t enc_varint(uint8_t *buf, size_t size, uint64_t val);
 
+/* encodes variable length string in @buf (which has at least @size bytes
+ * available). @str is the string to encode and @strlen is the length of 
+ * @str.
+ * returns the size of the varint that designates the length of the varstr. 
+ * if the return value + @strlen is greater than @size then the operation failed
+ * and the contents of @buf are undefined (may or may not contain a partial
+ * value).
+ */ 
+size_t enc_varstr(uint8_t *buf, size_t size, const char *str, uint16_t slen);
+
 
 #endif /* LIBBMSG_ENC_TYPES_H */
