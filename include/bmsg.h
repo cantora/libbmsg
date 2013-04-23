@@ -27,6 +27,14 @@ uint16_t bmsg_decode_uint16(const uint8_t *buf);
  */
 size_t bmsg_encode_varint(uint8_t *buf, size_t size, uint64_t val);
 
+/* decodes the bytes in @buf and stores the value of the int in @val.
+ * this function will not read more than @size bytes from buf. 
+ *
+ * returns the size of the decoded varint. if the return value is greater
+ * than @size, then the @val is unchanged. if the return value is 0 then
+ * @size == 0 and decoding could not be attempted.
+ */
+size_t bmsg_decode_varint(const uint8_t *buf, size_t size, uint64_t *val);
 
 /* encodes variable length string in @buf (which has at least @size bytes
  * available). @str is the string to encode and @strlen is the length of 

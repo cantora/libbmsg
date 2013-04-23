@@ -90,3 +90,36 @@ size_t bmsg_encode_varint(uint8_t *buf, size_t size, uint64_t val) {
 
 	return vint_size;
 }
+
+size_t bmsg_decode_varint(const uint8_t *buf, size_t size, uint64_t *val) {
+	size_t vint_size;
+
+	if(size < 1)
+		return 0;
+
+	switch(buf[0]) {
+	case 0xfd:
+		vint_size = 3;
+		if(size >= vint_size)
+			*val = (uint64_t) bmsg_decode_uint16(buf+1);
+		
+		break;
+	case 0xfe:
+		vint_size = 5;
+		if(size >= vint_size)
+			*val = (uint64_t) bmsg_decode_uint32(buf+1);
+
+		break;
+	case 0xff:
+		vint_size = 9;
+		if(size >= vint_size)
+			*val = (uint64_t) bmsg_decode_uint64(buf+1);
+
+		break;
+	default:
+		vint_size = 1;
+		*val = (uint64_t) buf[0];
+	}
+
+	return vint_size;
+}
