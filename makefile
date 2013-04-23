@@ -4,7 +4,7 @@ MKBUILD			:= $(shell mkdir -p $(BUILD) )
 
 CCAN_DIR		= ./libccan
 LIBCCAN			= $(CCAN_DIR)/libccan.a
-INCLUDES		= -I$(CCAN_DIR) -iquote"src"
+INCLUDES		= -iquote"include" -iquote"src" -I$(CCAN_DIR) 
 LIB				= $(LIBCCAN)
 
 OPTIMIZE		= -ggdb

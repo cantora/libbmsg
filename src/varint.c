@@ -1,11 +1,11 @@
-#include "enc_types.h"
+#include "bmsg.h"
 
 #include <string.h>
 
 #include <ccan/endian/endian.h>
 #include <ccan/build_assert/build_assert.h>
 
-void enc_uint64(uint8_t *buf, uint64_t val) {
+void bmsg_encode_uint64(uint8_t *buf, uint64_t val) {
 	val = CPU_TO_BE64_CONST(val);
 
 	/* code that calls this function will assume that
@@ -15,7 +15,7 @@ void enc_uint64(uint8_t *buf, uint64_t val) {
 	memcpy(buf, &val, 8);
 }
 
-void enc_uint32(uint8_t *buf, uint32_t val) {
+void bmsg_encode_uint32(uint8_t *buf, uint32_t val) {
 	val = CPU_TO_BE32_CONST(val);
 
 	/* code that calls this function will assume that
@@ -25,7 +25,7 @@ void enc_uint32(uint8_t *buf, uint32_t val) {
 	memcpy(buf, &val, 4);
 }
 
-void enc_uint16(uint8_t *buf, uint16_t val) {
+void bmsg_encode_uint16(uint8_t *buf, uint16_t val) {
 	val = CPU_TO_BE16_CONST(val);
 
 	/* code that calls this function will assume that
@@ -35,7 +35,7 @@ void enc_uint16(uint8_t *buf, uint16_t val) {
 	memcpy(buf, &val, 2);
 }
 
-size_t enc_varint(uint8_t *buf, size_t size, uint64_t val) {
+size_t bmsg_encode_varint(uint8_t *buf, size_t size, uint64_t val) {
 	size_t vint_size;
 
 	if(val < 0xfd) {
@@ -49,7 +49,7 @@ size_t enc_varint(uint8_t *buf, size_t size, uint64_t val) {
 
 		if(size >= vint_size) {
 			buf[0] = 0xfd;
-			enc_uint16(buf+1, (uint16_t) val);	
+			bmsg_encode_uint16(buf+1, (uint16_t) val);	
 		}
 	}
 	else if(val <= 0xffffffff) {
@@ -57,7 +57,7 @@ size_t enc_varint(uint8_t *buf, size_t size, uint64_t val) {
 
 		if(size >= vint_size) {
 			buf[0] = 0xfe;
-			enc_uint32(buf+1, (uint32_t) val);
+			bmsg_encode_uint32(buf+1, (uint32_t) val);
 		}
 	}
 	else {
@@ -65,23 +65,9 @@ size_t enc_varint(uint8_t *buf, size_t size, uint64_t val) {
 
 		if(size >= vint_size) {
 			buf[0] = 0xff;
-			enc_uint64(buf+1, (uint64_t) val);
+			bmsg_encode_uint64(buf+1, (uint64_t) val);
 		}
 	}
-
-	return vint_size;
-}
-
-/* here we impose a reasonable maximum string length size of 65535 */
-size_t enc_varstr(uint8_t *buf, size_t size, const char *str, uint16_t slen) {
-	size_t vint_size;
-
-	vint_size = enc_varint(buf, size, slen);
-	if(vint_size + slen > size)
-		return vint_size;
-
-	if(slen > 0)
-		memcpy(buf+vint_size, str, slen);
 
 	return vint_size;
 }
