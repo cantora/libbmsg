@@ -12,7 +12,14 @@ void bmsg_encode_uint64(uint8_t *buf, uint64_t val) {
 	 * 8 bytes will be written here, so we want to fail
 	 * compilation if this is untrue for some reason. */
 	BUILD_ASSERT(sizeof(val) == 8);
+	
 	memcpy(buf, &val, 8);
+}
+
+uint64_t bmsg_decode_uint64(const uint8_t *buf) {
+	uint64_t val = *((uint64_t *) buf);
+
+	return BE64_TO_CPU_CONST(val);
 }
 
 void bmsg_encode_uint32(uint8_t *buf, uint32_t val) {
@@ -25,6 +32,12 @@ void bmsg_encode_uint32(uint8_t *buf, uint32_t val) {
 	memcpy(buf, &val, 4);
 }
 
+uint32_t bmsg_decode_uint32(const uint8_t *buf) {
+	uint32_t val = *((uint32_t *) buf);
+
+	return BE32_TO_CPU_CONST(val);
+}
+
 void bmsg_encode_uint16(uint8_t *buf, uint16_t val) {
 	val = CPU_TO_BE16_CONST(val);
 
@@ -33,6 +46,12 @@ void bmsg_encode_uint16(uint8_t *buf, uint16_t val) {
 	 * compilation if this is untrue for some reason. */
 	BUILD_ASSERT(sizeof(val) == 2);
 	memcpy(buf, &val, 2);
+}
+
+uint16_t bmsg_decode_uint16(const uint8_t *buf) {
+	uint16_t val = *((uint16_t *) buf);
+
+	return BE16_TO_CPU_CONST(val);
 }
 
 size_t bmsg_encode_varint(uint8_t *buf, size_t size, uint64_t val) {

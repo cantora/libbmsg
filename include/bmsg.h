@@ -6,10 +6,18 @@
 
 /* assumes there are at least 8 bytes available in @buf. */
 void bmsg_encode_uint64(uint8_t *buf, uint64_t val);
+/* assumes there are at least 8 readable bytes in @buf */
+uint64_t bmsg_decode_uint64(const uint8_t *buf);
+
 /* assumes there are at least 4 bytes available in @buf. */
 void bmsg_encode_uint32(uint8_t *buf, uint32_t val);
+/* assumes there are at least 4 readable bytes in @buf */
+uint32_t bmsg_decode_uint32(const uint8_t *buf);
+
 /* assumes there are at least 2 bytes available in @buf. */
 void bmsg_encode_uint16(uint8_t *buf, uint16_t val);
+/* assumes there are at least 2 readable bytes in @buf */
+uint16_t bmsg_decode_uint16(const uint8_t *buf);
 
 /* encodes @val into @buf where @size is the number of bytes
  * available in @buf.

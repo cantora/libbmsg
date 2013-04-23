@@ -11,24 +11,31 @@ int main(int argc, char *argv[]) {
 	size_t i;
 	uint8_t buf[64];
 	uint8_t zero[64];
+	uint64_t input;
 	(void)(argc);
 	(void)(argv);
 
 	srand(time(NULL));
 	
 	memset(zero, 0, ARRAY_SIZE(zero));
-	plan_tests(1+1+1+2+3+3*2+3+5*2+3+9*2+3+7);
+	plan_tests(2+2+2+2+3+3*2+3+5*2+3+9*2+3+7);
 
 	diag("++++varint++++");
 
-	bmsg_encode_uint64(buf, 0xf10189a6be4d203f);
+	input = 0xf10189a6be4d203f;
+	bmsg_encode_uint64(buf, input);
 	ok1(memcmp(buf, "\xf1\x01\x89\xa6\xbe\x4d\x20\x3f", 8) == 0);
+	ok1(bmsg_decode_uint64(buf) == input);
 
-	bmsg_encode_uint32(buf, 0x2f5c3890);
+	input = 0x2f5c3890;
+	bmsg_encode_uint32(buf, (uint32_t) input);
 	ok1(memcmp(buf, "\x2f\x5c\x38\x90", 4) == 0);
+	ok1(bmsg_decode_uint32(buf) == input);
 
-	bmsg_encode_uint16(buf, 0x15ea);
+	input = 0x15ea;
+	bmsg_encode_uint16(buf, (uint16_t) input);
 	ok1(memcmp(buf, "\x15\xea", 2) == 0);
+	ok1(bmsg_decode_uint16(buf) == input);
 
 	memset(buf, 0, ARRAY_SIZE(buf) );
 
