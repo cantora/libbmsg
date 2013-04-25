@@ -5,7 +5,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#include "bmsg.h"
+#include "varint.h"
 
 int main(int argc, char *argv[]) {
 	size_t i;
